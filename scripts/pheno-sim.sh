@@ -33,10 +33,20 @@ else
 fi
 
 # create bed files for gcta sim
-plink --vcf $out.recode.vcf --make-bed --out $out
+if [ -f ${out}.bed ]; then
+	echo "using files: " ${out}.bed", "${out}.fam", "${out}.bim
+else 
+	echo "creating *.bed, *.fam, *.bim files"
+	plink --vcf $out.recode.vcf --make-bed --out $out
+fi
 
 # get causal traits
-awk '{print $2}' $out.bim | sort | uniq > causal.snplist
+if [ -f causal.snplist ]; then
+	echo "using existing causal.snplist"
+else 
+	echo "generating new causal.snplist"
+	awk '{print $2}' $out.bim | sort | uniq > causal.snplist
+fi
 
 # Simulate a quantitative trait with the heritability of 0.5 for a subset of individuals for 1 times
 $gcta --bfile $out --simu-qt --chr 1 --simu-hsq $h2 --simu-rep 10 --simu-causal-loci causal.snplist --out $phenout
@@ -46,9 +56,9 @@ train=${phenout}-train.phen
 val=${phenout}-val.phen
 
 # splitting data into test and validation
-awk '{if(rand() < 0.2) {print $0 > "val"} else {print $0 > "train"}}' ${phenout}.phen
-mv val $val
+sort -R ${phenout}.phen | awk '{if(rand() < 0.2) {print $0 > "val"} else {print $0 > "train"}}'
 mv train $train
+mv val $val
 
 # for hoffman time out
 echo "sleeping"
