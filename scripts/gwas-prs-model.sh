@@ -13,11 +13,16 @@ module load plink
 # create directory and file variables
 bin_files=../data/euro/euro
 phen_file=../data/euro/euro-h2-0.1-train.phen
-outdir=../data/euro/gwas/gwas
+outdir=../data/euro/gwas/gwas-pca-covar
+pca_out=../data/euro/pca
 mkdir $outdir
 
+mkdir $pca_out
+
+# run pca
+# plink --bfile $bin_files --pca 5 'header' --out ${pca_out}/h2-0.1-pca
 # run plink quantitative association simulation
-plink --bfile $bin_files --assoc --pheno $phen_file --all-pheno --allow-no-sex --out $outdir
+plink --bfile $bin_files --linear --pheno $phen_file --all-pheno --allow-no-sex --covar ${pca_out}/h2-0.1-pca.eigenvec --covar-name PC1, PC2, PC3, PC4, PC5 --out ${outdir}/h2-0.1
 
 
 # for hoffman time requirement
