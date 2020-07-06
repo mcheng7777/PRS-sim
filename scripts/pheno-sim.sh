@@ -60,17 +60,13 @@ do
 	--simu-hsq 0.${h2} \
 	--simu-rep 100 \
 	--simu-causal-loci ${out}-causal.snplist \
+
 	--out ${out}-h2-${h2}
 done
 
-# training and validation file paths
-# train=${phenout}-train.phen
-# val=${phenout}-val.phen
-
-# splitting data into test and validation
-# sort -R ${phenout}.phen | awk '{if(rand() < 0.2) {print $0 > "val"} else {print $0 > "train"}}'
-# mv train $train
-# mv val $val
+# split into training and validation
+awk '{print $2}' ${out}.fam | sort -R > indi-rand.txt
+./train-val.sh $pop
 
 # for hoffman time out
 echo "sleeping"

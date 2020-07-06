@@ -1,21 +1,16 @@
-#$ -N grm-h2-07
+#$ -N grm-h2
 #$ -cwd
 #$ -t 1-100:1
-#$ -l h_rt=00:05:00,h_data=16G
+#$ -l h_rt=00:30:00,h_data=16G
 #!/bin/bash
 
-
-SGE_TASK_ID=1
+# SGE_TASK_ID=1
 
 pop="euro"
-h2="0.7"
-
 gcta="../bin/gcta64"
-bfile="../data/euro/pheno/euro" 
-phenoin="${bfile}-h2-${h2}.phen" 
-phenonum=${SGE_TASK_ID}
-grm="../data/euro/grm/$pop"
-out="../data/euro/BLUP/$pop-h2-${h2}-replication-${phenonum}" 
+bfile="../data/${pop}/pheno/${pop}" 
+grm="../data/${pop}/grm/${pop}"
+phenonum=$SGE_TASK_ID
 
 if [ -f ${grm}.grm.bin ]; then
     echo "using genetic sim matrix file: " ${grm}.grm.bin
@@ -24,11 +19,26 @@ else
 	$gcta --bfile ${bfile} --make-grm --out ${grm}
 fi
 
-# variance estimation
-$gcta --reml --reml-pred-rand  --grm ${grm} --mpheno ${phenonum} --pheno $phenoin  --out ${out}
+for h2 in {1..9}
+do
+	phenoin="${bfile}-h2-${h2}.phen" 
+	out="../data/euro/BLUP/${pop}-h2-${h2}-replication-${phenonum}" 
 
-# blup
-$gcta --bfile ${bfile} --blup-snp ${out}.indi.blp --out ${out}
+	# variance estimation
+	$gcta \
+	--reml \
+	--reml-pred-rand  \
+	--grm ${grm} \
+	--mpheno ${phenonum} \
+	--pheno ${phenoin} \
+	--out ${out}
+
+	# blup
+	$gcta \
+	--bfile ${bfile} \
+	--blup-snp ${out}.indi.blp \
+	--out ${out}
+done
 
 echo "sleeping"
 sleep 5m
