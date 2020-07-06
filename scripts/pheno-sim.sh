@@ -60,8 +60,13 @@ do
 	--simu-hsq 0.${h2} \
 	--simu-rep 100 \
 	--simu-causal-loci ${out}-causal.snplist \
+
 	--out ${out}-h2-${h2}
 done
+
+# split into training and validation
+awk '{print $2}' ${out}.fam | sort -R > indi-rand.txt
+./train-val.sh $pop
 
 # for hoffman time out
 echo "sleeping"
