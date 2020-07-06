@@ -63,15 +63,6 @@ do
 	--out ${out}-h2-${h2}
 done
 
-# training and validation file paths
-# train=${phenout}-train.phen
-# val=${phenout}-val.phen
-
-# splitting data into test and validation
-# sort -R ${phenout}.phen | awk '{if(rand() < 0.2) {print $0 > "val"} else {print $0 > "train"}}'
-# mv train $train
-# mv val $val
-
 # for hoffman time out
 echo "sleeping"
 sleep 5m
