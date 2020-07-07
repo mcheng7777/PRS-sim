@@ -21,7 +21,7 @@ all_files <- list.files(args[1])
 phen_files <- grep("[0-9].phen$", all_files, value=T)
 
 # scale each file
-for(h in c(1:9)){
+for(h in c(0:9)){
 	p <- grep(paste(h,'.phen', "$", sep=""),phen_files,value=T)[1]
 	d <- read.table(paste(args[1],p,sep=""),header=F)
 	new_d <- mutate_at(d,colnames(d)[3:ncol(d)], function(x) (scale(x)))
