@@ -11,10 +11,10 @@
 module load plink
 
 # create directory and file variables
-bin_files=../data/euro/euro
-phen_file=../data/euro/euro-h2/euro-h2-0.1.phen.scaled
-outdir=../data/euro/gwas/gwas-pca-covar
-pca_out=../data/euro/pca
+bin_files="../data/euro/pheno/euro"
+phen_file="../data/euro/pheno/euro-h2-1-scaled-train.phen"
+outdir="../data/euro/gwas/gwas-pca-covar"
+pca_out="../data/euro/pca"
 mkdir $outdir
 
 mkdir $pca_out
