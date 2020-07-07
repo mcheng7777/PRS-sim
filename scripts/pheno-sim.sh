@@ -41,7 +41,11 @@ done
 Rscript ./standardize_phen.R /u/project/sriram/dtang200/PRS-sim/data/${pop}/pheno/
 
 # split into training and validation
+<<<<<<< HEAD
 awk '{print $2}' ${out}.fam | sort -R > ${outdir}/indi-rand.txt
+=======
+awk '{print $2}' ${out}.fam | sort -R > ../data/$pop/pheno/indi-rand.txt
+>>>>>>> formatting
 ./train-val.sh $pop
 
 # for hoffman time out
