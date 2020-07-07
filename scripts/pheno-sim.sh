@@ -14,7 +14,8 @@ gcta='../bin/gcta64'
 popinfo='../data/1000Genomes_Samples_Populations.txt'
 hapmatrix='../data/ALL.chr1.phase3_shapeit2_mvncall_integrated_v5a.20130502.genotypes.vcf.gz'
 pop="euro"
-out="../data/$pop/pheno/$pop"
+outdir="../data/$pop/pheno"
+out="${outdir}/$pop"
 
 # select european individuals
 grep "CEU\|TSI\|FIN\|GBR\|IBS" $popinfo | awk '{print $1}' > $out.txt
@@ -52,7 +53,7 @@ fi
 
 # simulate a quantitative traits at various heritability levels
 
-for h2 in {1..9}
+for h2 in {0..9}
 do
 	$gcta \
 	--bfile $out \
@@ -65,10 +66,10 @@ do
 done
 
 # standardized the phenotypes
-Rscript ./standardize_phen.R /u/project/sriram/dtang200/PRS-sim/data/euro/pheno
+Rscript ./standardize_phen.R /u/project/sriram/dtang200/PRS-sim/data/euro/pheno/
 
 # split into training and validation
-awk '{print $2}' ${out}.fam | sort -R > indi-rand.txt
+awk '{print $2}' ${out}.fam | sort -R > ${outdir}/indi-rand.txt
 ./train-val.sh $pop
 
 # for hoffman time out
