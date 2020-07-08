@@ -1,21 +1,24 @@
 #!/u/local/apps/R/3.5.1/gcc-4.9.3_MKL-2018/bin/R
-# args = commandArgs(trailingOnly = TRUE)
+args = commandArgs(trailingOnly = TRUE)
 
-# # 1 argument - desired directory
-# if (length(args)!=1) {
-#   stop("1 arguments must be supplied: /abspath/to/directory/", call.=FALSE)
-# }
+# 1 argument - desired directory
+if (length(args)!=2) {
+  stop("2 arguments must be supplied: h2-0.1-train /abspath/to/phenotype/file", call.=FALSE)
+}
 
 
 setwd("/u/home/m/mikechen/project-sriram/PRS-sim/data/euro/prs")
 p.threshold <- c(0.001,0.05,0.1,0.2,0.3,0.4,0.5)
-outname <- "h2-0.1."
+outname = paste0(args[1],".")
+phen_file <- args[2]
 # Read in the phenotype file 
-phenotype <- read.table("/u/home/m/mikechen/project-sriram/PRS-sim/data/euro/pheno-test/euro-h2-1-scaled-train.phen", header=F)
+phenotype <- read.table(phen_file, header=F)
 phenotype <- phenotype[,c(1:3)]
 colnames(phenotype) <- c("FID","IID","Phen")
+
 # Read in the PCs
-pcs <- read.table("/u/home/m/mikechen/project-sriram/PRS-sim/data/euro/pca/h2-0.1-pca.eigenvec", header=T)
+pcs <- read.table("/u/home/m/mikechen/project-sriram/PRS-sim/data/euro/pca/h2-0.1-pruned-pca.eigenvec", header=F)
+colnames(pcs) <- c("FID", "IID", paste0("PC",1:5))
 
 # no covariates
 # Read in the covariates (here, it is sex)
@@ -53,7 +56,7 @@ for(i in p.threshold){
 }
 # Best result is:
 prs.result[which.max(prs.result$R2),]
-
+maxthresh <- prs.result[which.max(prs.result$R2),]$Threshold[1]
 
 # Plot PRS
 
@@ -102,27 +105,16 @@ ggplot(data = prs.result, aes(x = factor(Threshold), y = R2)) +
                                  1)
   )
 # save the plot
-ggsave(paste0(outname,".png"), height = 7, width = 7)
-q() # exit R
+ggsave(paste0(outname,"png"), height = 7, width = 7)
 
 
 # Read in the files
-prs <- read.table(paste0(outname,"0.4.profile"), header=T)
-phen_val <- read.table("/u/home/m/mikechen/project-sriram/PRS-sim/data/euro/pheno-test/euro-h2-1-scaled-val.phen", header=F)
-phen_val <- phen_val[,c(1:3)]
-colnames(phen_val) <- c("FID","IID","Phen")
+prs <- read.table(paste0(outname,maxthresh,".profile"), header=T)
 # Merge the files
 dat <- merge(prs, phenotype)
-dat_val <- merge(prs, phen_val)
 # Start plotting
 ggplot(dat, aes(x=SCORE, y=Phen))+
   geom_point()+
   theme_classic()+
   labs(x="Polygenic Score", y="Phen")
-ggsave(paste0(outname,"0.4-PRS-plot.png"), height = 7, width = 7)
-
-ggplot(dat_val, aes(x=SCORE, y=Phen))+
-  geom_point()+
-  theme_classic()+
-  labs(x="Polygenic Score", y="Phen")
-ggsave(paste0(outname,"0.4-PRS-plot-val.png"), height = 7, width = 7)
+ggsave(paste0(outname,maxthresh,"-PRS-plot.png"), height = 7, width = 7)
