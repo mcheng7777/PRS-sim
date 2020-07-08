@@ -12,16 +12,22 @@ module load plink
 
 # create directory and file variables
 <<<<<<< HEAD
+<<<<<<< HEAD
 pop="sim"
 bin_files="../data/${pop}/pheno/${pop}"
 phen_file="../data/${pop}/pheno-test/${pop}-h2-1-scaled-train.phen"
 outdir="../data/${pop}/gwas/gwas-pca-covar"
 pca_out="../data/${pop}/pca"
 =======
+=======
+>>>>>>> a0d71329980097c4168c31a5d32902a8997905e0
 bin_files="../data/euro/pheno/euro"
 phen_file="../data/euro/pheno/euro-h2-1-scaled-train.phen"
 outdir="../data/euro/gwas/gwas-pca-covar"
 pca_out="../data/euro/pca"
+<<<<<<< HEAD
+>>>>>>> a0d71329980097c4168c31a5d32902a8997905e0
+=======
 >>>>>>> a0d71329980097c4168c31a5d32902a8997905e0
 mkdir $outdir
 
