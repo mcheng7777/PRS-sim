@@ -18,6 +18,7 @@ module load plink
 sum_stats="../data/euro/gwas-test/h2-0.1-scaled.P1.assoc.linear"
 b_files="../data/euro/pheno-test/euro"
 phen_file="../data/euro/pheno-test/euro-h2-1-scaled-train.phen"
+phen_val="../data/euro/pheno-test/euro-h2-1-scaled-val.phen"
 cov_file="../data/euro/pca/h2-0.1-pca.eigenvec"
 
 outdir="../data/euro/prs/"
@@ -54,14 +55,33 @@ echo "0.3 0 0.3" >> ${outdir}${outname}.rangelist
 echo "0.4 0 0.4" >> ${outdir}${outname}.rangelist
 echo "0.5 0 0.5" >> ${outdir}${outname}.rangelist
 
-# calculate PRS
+# calculate PRS for training and validation
 plink \
 	--bfile $b_files \
 	--pheno $phen_file --all-pheno --allow-no-sex \
 	--score $sum_stats 2 4 7 header \
 	--q-score-range ${outdir}${outname}.rangelist ${outdir}${outname}.SNP.pvalue \
 	--extract ${outdir}${outname}.valid.snp \
-	--out ${outdir}${outname}
+	--out ${outdir}${outname}-train
+
+plink \
+        --bfile $b_files \
+        --pheno $phen_val --all-pheno --allow-no-sex \
+        --score $sum_stats 2 4 7 header \
+        --q-score-range ${outdir}${outname}.rangelist ${outdir}${outname}.SNP.pvalue \
+        --extract ${outdir}${outname}.valid.snp \
+        --out ${outdir}${outname}-val
+
+#LD prune and PRS
+plink \
+	--bfile $b_files \
+	--indep-pairwise 200 50 0.25 \
+	--out "../data/euro/pca/${outname}"
+plink \
+	--bfile $b_files \
+	--extract "../data/euro/pca/${outname}.prune.in" \
+	--pca 5 \
+	--out "../data/euro/pca/${outname}-pruned-pca"
 
 
 echo "sleeping"
