@@ -14,10 +14,10 @@ outdir="../data/$pop/pheno"
 out="${outdir}/$pop"
 
 # select european individuals
-grep "CEU\|TSI\|FIN\|GBR\|IBS" $popinfo | awk '{print $1}' > $out.txt
+grep "CEU\|TSI\|FIN\|GBR\|IBS" $popinfo | awk '{print $1}' > ${out}.txt
 
 echo "creating filtered file"
-vcftools --gzvcf $hapmatrix --plink --maf 0.01 --keep $pop.txt --out $pop
+vcftools --gzvcf $hapmatrix --plink --maf 0.01 --keep ${out}.txt --out $pop
 bcftools view ${out}.recode.vcf -Oz -o ${out}.vcf.gz
 bcftools index ${out}.vcf.gz
 

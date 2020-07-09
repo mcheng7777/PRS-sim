@@ -4,8 +4,6 @@
 #$ -t 1-10:1 
 #$ -cwd
 
-#!/bin/bash
-
 . /u/local/Modules/default/init/modules.sh
 module load R/3.5.1
 

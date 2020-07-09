@@ -1,9 +1,22 @@
 #!/bin/bash
 
+if [ $# -eq 0 ]
+then
+	echo "Usage: ./batch.sh [population]"
+	exit 1
+fi
+
+mkdir ../data/${1}
+mkdir ../data/${1}/pheno
+mkdir ../data/${1}/grm
+mkdir ../data/${1}/blup
+mkdir ../data/${1}/prs
+
 if [ $1 != "sim" ]
 then
 	qsub ./filter.sh $1
 fi 
+
 # phenotype simulations
 qsub --hold_jid job-filter ./pheno-sim.sh $1
 # grm and blup
