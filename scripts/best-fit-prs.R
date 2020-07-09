@@ -2,8 +2,9 @@
 args = commandArgs(trailingOnly = TRUE)
 
 # 1 argument - desired directory
-if (length(args)!=2) {
-  stop("2 arguments must be supplied: h2-0.1-train /abspath/to/phenotype/file", call.=FALSE)
+print(args)
+if (length(args)!=4) {
+  stop("4 arguments must be supplied: h2-0.1-train /abspath/to/phenotype/file /abspath/to/pca.eigenvec /abspath/to/prs/directory", call.=FALSE)
 }
 # args = commandArgs(trailingOnly = TRUE)
 
@@ -13,7 +14,7 @@ if (length(args)!=2) {
 # }
 
 
-setwd("/u/home/m/mikechen/project-sriram/PRS-sim/data/euro/prs")
+setwd(args[4])
 p.threshold <- c(0.001,0.05,0.1,0.2,0.3,0.4,0.5)
 outname = paste0(args[1],".")
 phen_file <- args[2]
@@ -23,8 +24,8 @@ phenotype <- phenotype[,c(1:3)]
 colnames(phenotype) <- c("FID","IID","Phen")
 
 # Read in the PCs
-pcs <- read.table("/u/home/m/mikechen/project-sriram/PRS-sim/data/euro/pca/h2-0.1-pruned-pca.eigenvec", header=F)
-colnames(pcs) <- c("FID", "IID", paste0("PC",1:5))
+pcs <- read.table(args[3], header=T)
+# colnames(pcs) <- c("FID", "IID", paste0("PC",1:5))
 
 
 # no covariates
