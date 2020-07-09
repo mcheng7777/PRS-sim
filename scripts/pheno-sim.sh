@@ -13,12 +13,18 @@ outdir="../data/$pop/pheno"
 out="${outdir}/$pop"
 
 # create bed files for gcta sim
-plink --vcf ${out}.recode.vcf --make-bed --out ${out}-temp
+if [ $pop == "sim" ]
+then 
+	echo "simulating genotype"
+	./geno-sim.sh
+else 
+	plink --vcf ${out}.recode.vcf --make-bed --out ${out}-temp
 
-# remove duplicates
-cut -f 2 ${out}-temp.bim | sort | uniq -d > ${out}.dups
-plink --bfile ${out}-temp --exclude ${out}.dups --make-bed --out ${out}
-rm ${out}-temp*
+	# remove duplicates
+	cut -f 2 ${out}-temp.bim | sort | uniq -d > ${out}.dups
+	plink --bfile ${out}-temp --exclude ${out}.dups --make-bed --out ${out}
+	rm ${out}-temp*
+fi
 
 # get causal traits
 awk '{print $2}' $out.bim > ${out}-causal.snplist
