@@ -1,12 +1,10 @@
-#$ -N grm-h2
+#$ -N grm
 #$ -cwd
 #$ -t 1-100:1
-#$ -l h_rt=00:30:00,h_data=16G
+#$ -l h_rt=01:00:00,h_data=16G
 #!/bin/bash
 
-# SGE_TASK_ID=1
-
-pop="euro"
+pop="sim"
 gcta="../bin/gcta64"
 bfile="../data/${pop}/pheno/${pop}" 
 grm="../data/${pop}/grm/${pop}"
@@ -19,10 +17,10 @@ else
 	$gcta --bfile ${bfile} --make-grm --out ${grm}
 fi
 
-for h2 in {1..9}
+for h2 in {0..9}
 do
-	phenoin="${bfile}-h2-${h2}.phen" 
-	out="../data/euro/BLUP/${pop}-h2-${h2}-replication-${phenonum}" 
+	phenoin="${bfile}-h2-${h2}-scaled-train.phen" 
+	out="../data/${pop}/blup/${pop}-h2-${h2}-replication-${phenonum}" 
 
 	# variance estimation
 	$gcta \
