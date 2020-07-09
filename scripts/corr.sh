@@ -1,5 +1,5 @@
 #!/bin/bash
-#$ -N val-corr
+#$ -N job-corr
 #$ -l h_rt=00:30:00,h_data=8G
 #$ -t 1-10:1 
 #$ -cwd
@@ -10,7 +10,7 @@
 module load R/3.5.1
 
 h2=$(( SGE_TASK_ID - 1))
-pop="sim"
+pop=$1
 out="corr-${h2}.txt"
 
 echo -e "heritability\treplica\tR2" > $out

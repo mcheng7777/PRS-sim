@@ -1,4 +1,4 @@
-#$ -N prs-sim
+#$ -N job-gcta-prs
 #$ -l h_rt=1:00:00,h_data=8G
 #$ -t 1-10:1
 #$ -cwd
@@ -9,7 +9,7 @@
 module load plink
 
 # SGE_TASK_ID=10
-pop="sim"
+pop=$1
 bfile="../data/${pop}/pheno/${pop}"
 h2=$(( SGE_TASK_ID - 1 ))
 echo $h2

@@ -1,4 +1,4 @@
-#$ -N pheno-sim
+#$ -N job-pheno-sim
 #$ -cwd
 #$ -l h_rt=00:30:00,h_data=8G
 #!/bin/bash
@@ -8,7 +8,7 @@ module load plink
 module load R/3.5.1
 
 gcta='../bin/gcta64'
-pop="sim"
+pop=$1
 outdir="../data/$pop/pheno"
 out="${outdir}/$pop"
 
@@ -47,7 +47,6 @@ done
 Rscript ./standardize_phen.R /u/project/sriram/dtang200/PRS-sim/data/${pop}/pheno/
 
 # split into training and validation
-awk '{print $2}' ${out}.fam | sort -R > ${outdir}/indi-rand.txt
 ./train-val.sh $pop
 
 # for hoffman time out
