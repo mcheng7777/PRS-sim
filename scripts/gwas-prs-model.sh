@@ -30,7 +30,7 @@ plink \
 plink \
         --bfile $bin_files \
         --extract ${pca_out}${herit}.prune.in \
-        --pca 5 \
+        --pca 5 header \
         --out ${pca_out}${herit}-pruned-pca
 
 # run plink quantitative association simulation
