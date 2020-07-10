@@ -1,5 +1,6 @@
 #$ -N prs-sim
-#$ -l h_rt=1:00:00,h_data=8G
+#$ -l h_rt=3:00:00,h_data=8G
+#$ -t 1-10:1
 #$ -cwd
 
 #!/bin/bash
@@ -15,79 +16,88 @@ module load plink
 # phenotype matrix
 # covariate matrix
 
+# SGE_TASK_ID=10
 pop="sim"
-herit="h2-0.4"
-sum_stats="../data/${pop}/gwas/${herit}.P1.assoc.linear"
+herit=$(( SGE_TASK_ID - 1 ))
+echo $herit
+
 b_files="../data/${pop}/pheno/${pop}"
-phen_file="../data/${pop}/pheno-test/${pop}-h2-4-scaled-train.phen"
-phen_val="../data/${pop}/pheno-test/${pop}-h2-4-scaled-val.phen"
 
 outdir="../data/${pop}/prs/"
 mkdir $outdir
 
-# step 1 - clumping/LD
-if [ -f ${outdir}${herit}.clumped ] 
+# make p-value rangelist
+thresh_array=( "0.05" "0.1" "0.2" "0.3" "0.4" "0.5" )
+if [ -f ${outdir}rangelist ]
 then
-	echo "using ${outdir}${herit}.clumped"
+    echo "rangelist: ${outdir}rangelist"
 else
-	plink \
-		--bfile $b_files \
-		--clump-p1 1 \
-		--clump-r2 0.1 \
-		--clump-kb 250 \
-		--clump $sum_stats \
-		--clump-snp-field SNP \
-		--clump-field P \
-		--out ${outdir}${herit}
+    echo "p value thresholds"
+    # pvalue range list for inclusion in PRS
+    for i in "${thresh_array[@]}"
+    do
+        echo ${i}
+        echo "${i} 0 ${i}" >> ${outdir}rangelist
+    done
 fi
 
-# extract SNP ids
-awk 'NR!=1{print $3}' ${outdir}${herit}.clumped > ${outdir}${herit}.valid.snp
-
-# snp id's and p-values
-awk '{print $2,$9}' $sum_stats > ${outdir}${herit}.SNP.pvalue
-
-# pvalue range list for inclusion in PRS
-echo "0.001 0 0.001" > ${outdir}${herit}.rangelist
-echo "0.05 0 0.05" >> ${outdir}${herit}.rangelist
-echo "0.1 0 0.1" >> ${outdir}${herit}.rangelist
-echo "0.2 0 0.2" >> ${outdir}${herit}.rangelist
-echo "0.3 0 0.3" >> ${outdir}${herit}.rangelist
-echo "0.4 0 0.4" >> ${outdir}${herit}.rangelist
-echo "0.5 0 0.5" >> ${outdir}${herit}.rangelist
-
-# calculate PRS for training and validation
-plink \
-	--bfile $b_files \
-	--pheno $phen_file --all-pheno --allow-no-sex \
-	--score $sum_stats 2 4 7 header \
-	--q-score-range ${outdir}${herit}.rangelist ${outdir}${herit}.SNP.pvalue \
-	--extract ${outdir}${herit}.valid.snp \
-	--out ${outdir}${herit}-train
-
-plink \
-        --bfile $b_files \
-        --pheno $phen_val --all-pheno --allow-no-sex \
-        --score $sum_stats 2 4 7 header \
-        --q-score-range ${outdir}${herit}.rangelist ${outdir}${herit}.SNP.pvalue \
-        --extract ${outdir}${herit}.valid.snp \
-        --out ${outdir}${herit}-val
+for r in {1..10}
+do
+    name=h2-${herit}.P${r}
+    sum_stats="../data/${pop}/gwas/${name}.assoc.linear"
+    phen_file="../data/${pop}/pheno-test/${pop}-h2-${herit}-scaled.phen"
+    out=${outdir}${name}
+    # step 1 - clumping/LD
+    if [ -f ${out}.clumped ]
+    then
+        echo "using ${out}.clumped"
+    else
+        plink \
+            --bfile $b_files \
+            --clump-p1 1 \
+            --clump-r2 0.1 \
+            --clump-kb 250 \
+            --clump $sum_stats \
+            --clump-snp-field SNP \
+            --clump-field P \
+            --out ${out}
+    fi
+    # extract SNP ids
+    awk 'NR!=1{print $3}' ${out}.clumped > ${out}.valid.snp
+    # snp id's and p-values
+    awk '{print $2,$9}' $sum_stats > ${out}.SNP.pvalue
+    # calculate PRS for all phenotype and split up validation
+    plink \
+            --bfile $b_files \
+            --pheno $phen_file --mpheno ${r} --allow-no-sex \
+            --score $sum_stats 2 4 7 header \
+            --q-score-range ${outdir}rangelist ${out}.SNP.pvalue \
+            --extract ${out}.valid.snp \
+            --out ${out}
+    for i in "${thresh_array[@]}"
+    do
+        echo "sorting ${name}.${i}.profile"
+        awk '{printf $1 "\t" $3 "\t" $4 * $6 * 2 "\n"}' ${out}.${i}.profile > ${out}.${i}-pheno.profile
+        grep -F -wf "../data/${pop}/pheno/indi-val.txt" ${out}.${i}-pheno.profile > ${out}.${i}-val.profile
+    done
+done
 
 #LD prune and PRS
-if [ -f ../data/${pop}/pca/${herit}.prune.in ]
+if [ -f ../data/${pop}/pca/h2-${herit}.prune.in ]
 then
-	echo "using ../data/${pop}/pca/${herit}.prune.in"
+    echo "using ../data/${pop}/pca/h2-${herit}.prune.in"
 else
-	plink \
-		--bfile $b_files \
-		--indep-pairwise 200 50 0.25 \
-		--out "../data/${pop}/pca/${herit}"
-	plink \
-		--bfile $b_files \
-		--extract "../data/${pop}/pca/${herit}.prune.in" \
-		--pca 5 header \
-		--out "../data/${pop}/pca/${herit}-pruned-pca"
+    plink \
+        --bfile $b_files \
+        --indep-pairwise 200 50 0.25 \
+        --out "../data/${pop}/pca/h2-${herit}"
+    plink \
+        --bfile $b_files \
+        --extract "../data/${pop}/pca/h2-${herit}.prune.in" \
+        --pca 5 header \
+        --out "../data/${pop}/pca/h2-${herit}-pruned-pca"
 fi
 
 echo "sleeping"
 sleep 5m
+
