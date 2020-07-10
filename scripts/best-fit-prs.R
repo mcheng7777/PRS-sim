@@ -1,10 +1,14 @@
 #!/u/local/apps/R/3.5.1/gcc-4.9.3_MKL-2018/bin/R
 args = commandArgs(trailingOnly = TRUE)
-
+# 
+# args[1] <- "h2-0.4-train"
+# args[2] <- "/u/home/m/mikechen/project-sriram/PRS-sim/data/sim/pheno-test/sim-h2-4-scaled-train.phen"
+# args[3] <- "/u/home/m/mikechen/project-sriram/PRS-sim/data/sim/pca/h2-0.4-pruned-pca.eigenvec"
+# args[4] <- "/u/home/m/mikechen/project-sriram/PRS-sim/data/sim/prs/"
 # 1 argument - desired directory
 print(args)
-if (length(args)!=4) {
-  stop("4 arguments must be supplied: h2-0.1-train /abspath/to/phenotype/file /abspath/to/pca.eigenvec /abspath/to/prs/directory", call.=FALSE)
+if (length(args)!=3) {
+  stop("3 arguments must be supplied: h2-0.P1 /abspath/to/pca.eigenvec /abspath/to/prs/directory", call.=FALSE)
 }
 # args = commandArgs(trailingOnly = TRUE)
 
@@ -14,17 +18,16 @@ if (length(args)!=4) {
 # }
 
 
-setwd(args[4])
-p.threshold <- c(0.001,0.05,0.1,0.2,0.3,0.4,0.5)
+setwd(args[3])
+p.threshold <- c(0.05,0.1,0.2,0.3,0.4,0.5)
 outname = paste0(args[1],".")
-phen_file <- args[2]
-# Read in the phenotype file 
-phenotype <- read.table(phen_file, header=F)
-phenotype <- phenotype[,c(1:3)]
+# Obtain phenotype from prs file with arbitrary p-value thresh (all reference phenotypes are the same)
+phenotype <- read.table(paste0(outname,0.05,"-val.profile"), header=F)
+phenotype <- phenotype[,c(1,1,2)]
 colnames(phenotype) <- c("FID","IID","Phen")
 
 # Read in the PCs
-pcs <- read.table(args[3], header=T)
+pcs <- read.table(args[2], header=T)
 # colnames(pcs) <- c("FID", "IID", paste0("PC",1:5))
 
 
@@ -42,7 +45,9 @@ null.r2 <- summary(null.model)$r.squared
 prs.result <- NULL
 for(i in p.threshold){
   # Go through each p-value threshold
-  prs <- read.table(paste0(outname,i,".profile"), header=T)
+  prs <- read.table(paste0(outname,i,"-val.profile"), header=F)
+  prs <- prs[,c(1,1,3)]
+  colnames(prs) <- c("FID","IID", "SCORE")
   # Merge the prs with the phenotype matrix
   # We only want the FID, IID and PRS from the PRS file, therefore we only select the 
   # relevant columns
@@ -114,20 +119,24 @@ ggplot(data = prs.result, aes(x = factor(Threshold), y = R2)) +
                                  1)
   )
 # save the plot
-ggsave(paste0(outname,"png"), height = 7, width = 7)
+ggsave(paste0("plots/",outname,"val-R2",".png"), height = 7, width = 7)
 
 
 # Read in the files
-prs <- read.table(paste0(outname,maxthresh,".profile"), header=T)
-# Merge the files
-dat <- merge(prs, phenotype)
-
-
-# Start plotting
-ggplot(dat, aes(x=SCORE, y=Phen))+
-  geom_point()+
-  theme_classic()+
-  labs(x="Polygenic Score", y="Phen")
-
-ggsave(paste0(outname,maxthresh,"-PRS-plot.png"), height = 7, width = 7)
-
+for (t in p.threshold){
+  print(paste0("generating ",outname,t,"-val.profile"))
+  prs <- read.table(paste0(outname,t,"-val.profile"), header=F)
+  prs <- prs[,c(1,1,3)]
+  colnames(prs) <- c("FID","IID", "SCORE")
+  # Merge the files
+  dat <- merge(prs, phenotype)
+  
+  
+  # Start plotting
+  ggplot(dat, aes(x=SCORE, y=Phen))+
+    geom_point()+
+    theme_classic()+
+    labs(x="Polygenic Score", y="Phen")
+  
+  ggsave(paste0("plots/",outname,t,"-val-PRS-plot.png"), height = 7, width = 7)
+}
