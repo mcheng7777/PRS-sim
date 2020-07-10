@@ -133,7 +133,8 @@ for (t in p.threshold){
   
   
   # Start plotting
-  ggplot(dat, aes(x=SCORE, y=Phen))+
+  ggplot(dat, aes(x=SCORE, y=Phen),title)+
+    ggtitle(paste0("PRS phenotype predicitons for ", outname,"threshold=",t))+
     geom_point()+
     theme_classic()+
     labs(x="Polygenic Score", y="Phen")
