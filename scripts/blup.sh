@@ -13,7 +13,7 @@ phenonum=$SGE_TASK_ID
 for h2 in {0..9}
 do
 	phenoin="${bfile}-h2-${h2}-scaled-train.phen" 
-	out="../data/${pop}/blup/${pop}-h2-${h2}-replication-${phenonum}" 
+	out="../data/${pop}/blup/${pop}-h2-${h2}-r-${phenonum}" 
 
 	# variance estimation
 	$gcta \

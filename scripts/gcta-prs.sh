@@ -16,7 +16,7 @@ echo $h2
 
 for r in {1..100}
 do
-	name=${pop}-h2-${h2}-replication-${r}
+	name="${pop}-h2-${h2}-r-${r}"
 	score="../data/${pop}/blup/${name}.snp.blp"
 	out="../data/${pop}/prs/${name}"
 	pheno="../data/${pop}/pheno/${pop}-h2-${h2}-scaled.phen"

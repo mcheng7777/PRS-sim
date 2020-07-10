@@ -52,4 +52,5 @@ Rscript ./standardize_phen.R /u/project/sriram/dtang200/PRS-sim/data/${pop}/phen
 # for hoffman time out
 echo "sleeping"
 sleep 5m
+echo "done sleeping"
 

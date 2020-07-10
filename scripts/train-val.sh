@@ -2,10 +2,10 @@
 
 pop=$1
 outdir="../data/$pop/pheno"
-names="${outdor}/indi"
+names="${outdir}/indi"
 out="${outdir}/$pop"
 
-awk '{print $1"\t"$2}' ${out}.fam | sort -R > ${names}-rand.txt
+awk '{print $1}' ${out}.fam | sort -R > ${names}-rand.txt
 
 total=$(cat ${names}-rand.txt | wc -l)
 train=$(( total / 100 * 80 ))
