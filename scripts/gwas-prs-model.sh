@@ -1,5 +1,5 @@
 
-#$ -N gwas-sim
+#$ -N job-gwas-sim
 #$ -cwd
 #$ -l h_rt=5:00:00,h_data=8G
 
