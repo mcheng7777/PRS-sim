@@ -1,4 +1,4 @@
-#$ -N prs-plots
+#$ -N job-prs-plots
 #$ -l h_rt=1:00:00,h_data=8G
 #$ -t 1-10:1
 #$ -cwd
