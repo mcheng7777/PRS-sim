@@ -10,7 +10,7 @@
 module load plink
 
 # create directory and file variables
-pop="sim"
+pop=$1
 bin_files="../data/${pop}/pheno/${pop}"
 outdir="../data/${pop}/gwas/"
 pca_out="../data/${pop}/pca/"
