@@ -17,7 +17,7 @@ module load plink
 # covariate matrix
 
 # SGE_TASK_ID=10
-pop="sim"
+pop=$1
 herit=$(( SGE_TASK_ID - 1 ))
 echo $herit
 
