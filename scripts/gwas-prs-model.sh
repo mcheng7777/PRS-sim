@@ -1,7 +1,7 @@
 
 #$ -N job-gwas-sim
 #$ -cwd
-#$ -l h_rt=5:00:00,h_data=8G
+#$ -l h_rt=30:00:00,h_data=16G,highp
 
 #!/bin/bash
 
@@ -14,13 +14,12 @@ pop=$1
 bin_files="../data/${pop}/pheno/${pop}"
 outdir="../data/${pop}/gwas/"
 pca_out="../data/${pop}/pca/"
-mkdir $outdir
-mkdir $pca_out
+
 
 for h in {0..9}
 do
 	herit="h2-${h}"
-	phen_file="../data/${pop}/pheno-test/${pop}-${herit}-scaled-train.phen"
+	phen_file="../data/${pop}/pheno/${pop}-${herit}-scaled-train.phen"
 	#LD prune and PCA
 	plink \
 		--bfile $bin_files \
