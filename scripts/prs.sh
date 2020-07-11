@@ -1,5 +1,5 @@
 #$ -N job-prs-sim
-#$ -l h_rt=1:00:00,h_data=8G
+#$ -l h_rt=6:00:00,h_data=8G
 #$ -t 1-10:1
 #$ -cwd
 
@@ -41,12 +41,12 @@ else
     done
 fi
 
-for r in {1..10}
+for r in {1..100}
 do
     name=h2-${herit}.P${r}
     outname=h2-${herit}-r-${r}
     sum_stats="../data/${pop}/gwas/${name}.assoc.linear"
-    phen_file="../data/${pop}/pheno-test/${pop}-h2-${herit}-scaled.phen"
+    phen_file="../data/${pop}/pheno/${pop}-h2-${herit}-scaled.phen"
     out=${outdir}${pop}-${outname}
     # step 1 - clumping/LD
     if [ -f ${out}.clumped ]
