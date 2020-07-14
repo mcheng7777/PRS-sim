@@ -1,30 +1,38 @@
 #!/bin/bash
 
-if [ $# -eq 0 ]
+if [ $# -ne 2 ]
 then
-	echo "Usage: ./batch.sh [population]"
+	echo "Usage: ./batch.sh [population 1] [population 2]"
 	exit 1
 fi
 
-mkdir ../data/${1}
-mkdir ../data/${1}/pheno
-mkdir ../data/${1}/grm
-mkdir ../data/${1}/blup
-mkdir ../data/${1}/prs
+if [ ${1} == ${2} ]
+then 
+	echo "one population"
+	pop=$1
+	popnum=1
+else 
+	echo "two populations"
+	pop="${1}-${2}"
+	popnum=2
+fi
 
-if [ $1 != "sim" ]
-then
-	echo $1
-#	qsub ./filter.sh $1
-fi 
+mkdir ../data/${pop}
+mkdir ../data/${pop}/vcf
+mkdir ../data/${pop}/pheno
+mkdir ../data/${pop}/grm
+mkdir ../data/${pop}/blup
+mkdir ../data/${pop}/prs
 
+# filter vcf
+qsub ./filter.sh ${1} ${2}
 # phenotype simulations
-qsub -hold_jid job-filter ./pheno-sim.sh $1
+qsub -hold_jid job-filter ./pheno-sim.sh $pop $popnum
 # grm
-qsub -hold_jid job-pheno-sim ./grm.sh $1
+qsub -hold_jid job-pheno-sim ./grm.sh $pop
 # blup
-qsub -hold_jid job-grm ./blup.sh $1
+qsub -hold_jid job-grm ./blup.sh $pop
 # prs using gcta
-qsub -hold_jid job-blup ./gcta-prs.sh $1
+qsub -hold_jid job-blup ./gcta-prs.sh $pop
 # calculate the correlations
-qsub -hold_jid job-gcta-prs ./corr.sh $1
+qsub -hold_jid job-gcta-prs ./corr.sh $pop

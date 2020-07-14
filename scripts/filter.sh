@@ -7,22 +7,48 @@
 module load vcftools
 module load bcftools
 
+if [ $# -ne 2 ]
+then
+	echo "Usage: ./batch.sh [population 1] [population 2]"
+	exit 1
+fi
+
+
+if [ ${1} == ${2} ]
+then 
+	echo "one population"
+	pop=$1
+else 
+	echo "two populations"
+	pop="${1}-${2}"
+fi
+
+
 popinfo='../data/1000Genomes_Samples_Populations.txt'
 hapmatrix='../data/ALL.chr1.phase3_shapeit2_mvncall_integrated_v5a.20130502.genotypes.vcf.gz'
 snps='../data/first-2000-snps.txt'
-pop=$1
-outdir="../data/$pop/pheno"
+pop1=$1
+pop2=$2
+outdir="../data/$pop/vcf"
 out="${outdir}/$pop"
 
-echo "creating filtered file"
+if [ ${1} != ${2} ]
+then 
+	echo "filtering two populations"
+	cat "../data/${pop1}.txt" "../data/${pop2}.txt" > "../data/${pop}.txt"
+fi
+
 vcftools \
 	--gzvcf $hapmatrix \
 	--maf 0.05 \
 	--recode \
-	--keep ${out}.txt \
+	--keep "../data/${pop}.txt" \
 	--out ${out}
-bcftools view ${out}.recode.vcf -Oz -o ${out}.vcf.gz
-bcftools index ${out}.vcf.gz
+
+phenodir="../data/${pop}/pheno"
+head -1253 ${out}.recode.vcf > ${phenodir}/${pop}.recode.vcf
+cp ../data/${pop1}.txt ${phenodir}/indi-train.txt
+cp ../data/${pop2}.txt ${phenodir}/indi-val.txt
 
 # for hoffman time out
 echo "sleeping"
