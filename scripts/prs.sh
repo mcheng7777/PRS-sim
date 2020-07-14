@@ -83,22 +83,6 @@ do
     done
 done
 
-#LD prune and PRS
-if [ -f ../data/${pop}/pca/h2-${herit}.prune.in ]
-then
-    echo "using ../data/${pop}/pca/h2-${herit}.prune.in"
-else
-    plink \
-        --bfile $b_files \
-        --indep-pairwise 200 50 0.25 \
-        --out "../data/${pop}/pca/h2-${herit}"
-    plink \
-        --bfile $b_files \
-        --extract "../data/${pop}/pca/h2-${herit}.prune.in" \
-        --pca 5 header \
-        --out "../data/${pop}/pca/h2-${herit}-pruned-pca"
-fi
-
 echo "sleeping"
 sleep 5m
 
