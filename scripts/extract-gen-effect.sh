@@ -1,6 +1,6 @@
 #!/bin/bash
 
-pop="euro"
+pop=$1
 gblup="../data/${pop}/blup/${pop}"
 
 for h2 in {0..9}
@@ -14,7 +14,7 @@ do
 	for r in {1..100}
 	do
 		# get the column of genetic effects
-		awk '{print $1"\t"$4}' ${gblup}-h2-${h2}-replication-${r}.indi.blp > col
+		awk '{print $1"\t"$4}' ${gblup}-h2-${h2}-r-${r}.indi.blp > col
 
 		if [ -f $out ]
 		then 

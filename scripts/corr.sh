@@ -11,8 +11,6 @@ h2=$(( SGE_TASK_ID - 1))
 pop=$1
 out="corr-${h2}.txt"
 
-echo -e "heritability\treplica\tR2" > $out
-
 for r in {1..100}
 do
 	echo "replica $r"

@@ -10,8 +10,8 @@ awk '{print $1}' ${out}.fam | sort -R > ${names}-rand.txt
 total=$(cat ${names}-rand.txt | wc -l)
 train=$(( total / 100 * 80 ))
 
-head -n $train ${names}-rand.txt > ${names}-train.txt
-tail -n +$((train + 1)) ${names}-rand.txt > ${names}-val.txt
+#head -n $train ${names}-rand.txt > ${names}-train.txt
+#tail -n +$((train + 1)) ${names}-rand.txt > ${names}-val.txt
 
 for h2 in {0..9}
 do

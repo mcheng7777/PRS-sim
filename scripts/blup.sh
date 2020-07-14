@@ -1,17 +1,18 @@
 #$ -N job-blup
 #$ -cwd
-#$ -t 1-100:1
+#$ -t 1-10:1
 #$ -l h_rt=01:00:00,h_data=16G
 #!/bin/bash
 
+h2=$(( SGE_TASK_ID - 1))
 pop=$1
 gcta="../bin/gcta64"
 bfile="../data/${pop}/pheno/${pop}" 
 grm="../data/${pop}/grm/${pop}"
-phenonum=$SGE_TASK_ID
 
-for h2 in {0..9}
+for r in {1..100}
 do
+	phenonum=$r
 	phenoin="${bfile}-h2-${h2}-scaled-train.phen" 
 	out="../data/${pop}/blup/${pop}-h2-${h2}-r-${phenonum}" 
 
