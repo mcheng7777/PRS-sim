@@ -4,6 +4,13 @@
 #$ -l h_rt=01:00:00,h_data=16G
 #!/bin/bash
 
+
+if [ $# -ne 1 ]
+then
+	echo "Usage: ./blup.sh [population]"
+	exit 1
+fi
+
 h2=$(( SGE_TASK_ID - 1))
 pop=$1
 gcta="../bin/gcta64"

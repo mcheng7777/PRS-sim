@@ -7,6 +7,13 @@
 . /u/local/Modules/default/init/modules.sh
 module load R/3.5.1
 
+
+if [ $# -ne 1 ]
+then
+	echo "Usage: ./corr.sh [population]"
+	exit 1
+fi
+
 h2=$(( SGE_TASK_ID - 1))
 pop=$1
 out="corr-${h2}.txt"

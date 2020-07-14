@@ -9,7 +9,7 @@ module load bcftools
 
 if [ $# -ne 2 ]
 then
-	echo "Usage: ./batch.sh [population 1] [population 2]"
+	echo "Usage: ./filter.sh [population 1] [population 2]"
 	exit 1
 fi
 

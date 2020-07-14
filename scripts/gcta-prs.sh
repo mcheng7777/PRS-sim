@@ -8,6 +8,13 @@
 . /u/local/Modules/default/init/modules.sh
 module load plink
 
+
+if [ $# -ne 1 ]
+then
+	echo "Usage: ./gcta-prs.sh [population]"
+	exit 1
+fi
+
 # SGE_TASK_ID=10
 pop=$1
 bfile="../data/${pop}/pheno/${pop}"

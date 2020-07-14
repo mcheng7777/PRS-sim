@@ -1,5 +1,12 @@
 #!/bin/bash
 
+
+if [ $# -ne 2 ]
+then
+	echo "Usage: ./train-val.sh [population] [number of populations]"
+	exit 1
+fi
+
 pop=$1
 popnum=$2
 outdir="../data/$pop/pheno"

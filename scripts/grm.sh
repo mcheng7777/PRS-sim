@@ -3,6 +3,12 @@
 #$ -l h_rt=00:05:00,h_data=8G
 #!/bin/bash
 
+if [ $# -ne 1 ]
+then
+	echo "Usage: ./grm.sh [population]"
+	exit 1
+fi
+
 pop=$1
 gcta="../bin/gcta64"
 bfile="../data/${pop}/pheno/${pop}" 

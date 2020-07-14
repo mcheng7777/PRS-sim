@@ -7,6 +7,13 @@
 module load plink
 module load R/3.5.1
 
+
+if [ $# -ne 2 ]
+then
+	echo "Usage: ./pheno-sim.sh [population] [number of populations]"
+	exit 1
+fi
+
 gcta='../bin/gcta64'
 pop=$1
 popnum=$2
