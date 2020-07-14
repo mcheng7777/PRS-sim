@@ -1,17 +1,28 @@
 #!/bin/bash
 
+
+if [ $# -ne 2 ]
+then
+	echo "Usage: ./train-val.sh [population] [number of populations]"
+	exit 1
+fi
+
 pop=$1
+popnum=$2
 outdir="../data/$pop/pheno"
 names="${outdir}/indi"
 out="${outdir}/$pop"
 
-awk '{print $1}' ${out}.fam | sort -R > ${names}-rand.txt
+if [ $popnum -eq 1 ]
+then 
+	awk '{print $1}' ${out}.fam | sort -R > ${names}-rand.txt
+	
+	total=$(cat ${names}-rand.txt | wc -l)
+	train=$(( total / 100 * 80 ))
 
-total=$(cat ${names}-rand.txt | wc -l)
-train=$(( total / 100 * 80 ))
-
-head -n $train ${names}-rand.txt > ${names}-train.txt
-tail -n +$((train + 1)) ${names}-rand.txt > ${names}-val.txt
+	head -n $train ${names}-rand.txt > ${names}-train.txt
+	tail -n +$((train + 1)) ${names}-rand.txt > ${names}-val.txt
+fi
 
 for h2 in {0..9}
 do

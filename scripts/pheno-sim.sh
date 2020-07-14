@@ -7,8 +7,16 @@
 module load plink
 module load R/3.5.1
 
+
+if [ $# -ne 2 ]
+then
+	echo "Usage: ./pheno-sim.sh [population] [number of populations]"
+	exit 1
+fi
+
 gcta='../bin/gcta64'
 pop=$1
+popnum=$2
 outdir="../data/$pop/pheno"
 out="${outdir}/$pop"
 
@@ -47,7 +55,7 @@ done
 Rscript ./standardize_phen.R /u/project/sriram/dtang200/PRS-sim/data/${pop}/pheno/
 
 # split into training and validation
-./train-val.sh $pop
+./train-val.sh $pop $popnum
 
 # for hoffman time out
 echo "sleeping"
