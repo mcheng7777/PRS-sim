@@ -1,7 +1,9 @@
 
 #$ -N job-gwas-sim
 #$ -cwd
-#$ -l h_rt=30:00:00,h_data=16G,highp
+#$ -l h_rt=40:00:00,h_data=32G,highp
+#$ -pe shared 4
+#$ -t 1-10:1
 
 #!/bin/bash
 
@@ -9,6 +11,7 @@
 . /u/local/Modules/default/init/modules.sh
 module load plink
 
+# SGE_TASK_ID=10
 # create directory and file variables
 pop=$1
 bin_files="../data/${pop}/pheno/${pop}"
@@ -30,18 +33,17 @@ else
 		--pca 5 header \
 		--out ${pca_out}${pop}-pruned-pca
 fi
-for h in {0..9}
-do
-    herit="h2-${h}"
-    phen_file="../data/${pop}/pheno/${pop}-${herit}-scaled-train.phen"
-	# run plink quantitative association simulation
-	plink \
-		--bfile $bin_files \
-		--linear 'hide-covar' \
-		--pheno $phen_file --all-pheno --allow-no-sex \
-		--covar ${pca_out}${pop}-pruned-pca.eigenvec --covar-name PC1, PC2, PC3, PC4, PC5 \
-		--out ${outdir}${herit}
-done
+
+h=$(( SGE_TASK_ID - 1 ))
+herit="h2-${h}"
+phen_file="../data/${pop}/pheno/${pop}-${herit}-scaled-train.phen"
+# run plink quantitative association simulation
+plink \
+	--bfile $bin_files \
+	--linear 'hide-covar' \
+	--pheno $phen_file --all-pheno --allow-no-sex \
+	--covar ${pca_out}${pop}-pruned-pca.eigenvec --covar-name PC1, PC2, PC3, PC4, PC5 \
+	--out ${outdir}${herit}
 
 # for hoffman time requirement
 echo "sleeping"
