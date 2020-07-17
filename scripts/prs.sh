@@ -27,7 +27,7 @@ outdir="../data/${pop}/prs/"
 mkdir $outdir
 
 # make p-value rangelist
-thresh_array=( "0.05" "0.1" "0.2" "0.3" "0.4" "0.5" )
+thresh_array=( "0.05" "0.1" "0.2" "0.3" "0.4" "0.5" "0.6" "0.7" "0.8" "0.9" "1" )
 if [ -f ${outdir}rangelist ]
 then
     echo "rangelist: ${outdir}rangelist"
@@ -56,7 +56,7 @@ do
         plink \
             --bfile $b_files \
             --clump-p1 1 \
-            --clump-r2 0.1 \
+            --clump-r2 0.2 \
             --clump-kb 250 \
             --clump $sum_stats \
             --clump-snp-field SNP \
@@ -80,6 +80,8 @@ do
         echo "sorting ${name}.${i}.profile"
         awk '{printf $1 "\t" $3 "\t" $4 * $6 * 2 "\n"}' ${out}.${i}.profile > ${out}.${i}-pheno.profile
         grep -F -wf "../data/${pop}/pheno/indi-val.txt" ${out}.${i}-pheno.profile > ${out}.${i}-val.profile
+	# grep -F -wf "../data/${pop}/pheno/indi-test.txt" ${out}.${i}-pheno.profile > ${out}.${i}-test.profile
+	rm ${out}.${i}-pheno.profile
     done
 done
 
