@@ -1,7 +1,7 @@
 #$ -N job-blup
 #$ -cwd
 #$ -t 1-10:1
-#$ -l h_rt=04:00:00,h_data=16G
+#$ -l h_rt=06:00:00,h_data=16G
 #!/bin/bash
 
 
