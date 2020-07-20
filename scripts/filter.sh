@@ -24,8 +24,8 @@ else
 fi
 
 
-popinfo='../data/1000Genomes_Samples_Populations.txt'
-hapmatrix='../data/ALL.chr1.phase3_shapeit2_mvncall_integrated_v5a.20130502.genotypes.vcf.gz'
+#hapmatrix='../data/ALL.chr1.phase3_shapeit2_mvncall_integrated_v5a.20130502.genotypes.vcf.gz'
+hapmatrix='../data/full.recode.vcf'
 snps='../data/first-2000-snps.txt'
 pop1=$1
 pop2=$2
@@ -39,8 +39,7 @@ then
 fi
 
 vcftools \
-	--gzvcf $hapmatrix \
-	--maf 0.05 \
+	--vcf $hapmatrix \
 	--recode \
 	--keep "../data/${pop}.txt" \
 	--out ${out}
@@ -55,3 +54,5 @@ echo "sleeping"
 sleep 5m
 
 # --keep ${out}.txt \
+# --gzvcf $hapmatrix \
+# --maf 0.05 \
