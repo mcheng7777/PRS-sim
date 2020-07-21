@@ -22,15 +22,14 @@ pop=$1
 working_dir="../data/${pop}"
 pca_file="pca/${pop}-pruned-pca.eigenvec"
 herit=$(( SGE_TASK_ID - 1))
-
+outfile="genetic-max-pvals-${herit}.txt"
 echo $herit
-for r in {1..10}
+for r in {1..100}
 do
-	val_phen="../data/${pop}/pheno-test/${pop}-h2-${herit}-scaled-val.phen"
 	name="${pop}-h2-${herit}-r-${r}"
 	echo "generating validation plots"
 	# plot test prs
-	Rscript best-fit-prs.R ${name} $pca_file $working_dir
+	Rscript best-fit-prs.R ${name} $pca_file $working_dir $outfile
 done
 
 echo "sleeping"
