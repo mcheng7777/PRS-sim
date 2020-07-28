@@ -1,38 +1,32 @@
 #$ -N job-blup
 #$ -cwd
-#$ -t 1-10:1
-#$ -l h_rt=06:00:00,h_data=16G
+#$ -t 1-100:1
+#$ -l h_rt=02:30:00,h_data=8G
+#$ -j y
+##$ -hold_jid job-grm
 #!/bin/bash
 
 
-if [ $# -ne 2 ]
+if [ $# -ne 1 ]
 then
-	echo "Usage: ./blup.sh [pop1] [pop2]"
+	echo "Usage: ./blup.sh [pop]"
 	exit 1
 fi
 gcta="../../bin/gcta64"
 
-#SGE_TASK_ID=10
-h2=$(( SGE_TASK_ID - 1))
-pop1=$1
-pop2=$2
+#SGE_TASK_ID=87
+#h2=$(( SGE_TASK_ID - 1))
+r=$SGE_TASK_ID
+pop=$1
 
-if [ $pop1 == $pop2 ]
-then
-	pop=$pop1
-else
-	pop=${pop1}-${pop2}
-fi
+bfile="../../data/train/${pop}/pheno/${pop}" 
+grm="../../data/train/${pop}/grm/${pop}"
+pheno="../../data/train/${pop}/pheno/${pop}"
 
-bfile="../../data/${pop}/pheno/${pop}-train" 
-grm="../../data/${pop}/grm/${pop1}"
-pheno="../../data/${pop}/pheno/${pop}"
-
-
-for r in {1..100}
+for h2 in {0..9}
 do
-	phenoin="${pheno}-h2-${h2}-train.phen" 
-	out="../../data/${pop}/blup/${pop}-h2-${h2}-r-${r}" 
+	phenoin="${pheno}-h2-${h2}.phen" 
+	out="../../data/train/${pop}/blup/${pop}-h2-${h2}-r-${r}" 
 
 	# variance estimation
 	$gcta \
@@ -41,7 +35,7 @@ do
 	--grm ${grm} \
 	--mpheno ${r} \
 	--pheno ${phenoin} \
-	--thread-num 4 \
+	--thread-num 8 \
 	--out ${out}
 
 	# blup
@@ -53,4 +47,4 @@ done
 
 echo "sleeping"
 sleep 5m
-echo "done sleeping"
+echo "done"

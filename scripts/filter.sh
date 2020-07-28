@@ -1,6 +1,7 @@
 #$ -N job-filter
 #$ -cwd
 #$ -l h_rt=05:00:00,h_data=16G
+#$ -j y
 #!/bin/bash
 
 . /u/local/Modules/default/init/modules.sh

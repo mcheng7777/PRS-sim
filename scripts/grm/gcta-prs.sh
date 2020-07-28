@@ -1,6 +1,8 @@
 #$ -N job-gcta-prs
-#$ -l h_rt=03:00:00,h_data=8G
+#$ -l h_rt=01:00:00,h_data=8G
 #$ -t 1-10:1
+#$ -j y
+#$ -hold_jid job-blup
 #$ -cwd
 
 #!/bin/bash
@@ -11,29 +13,24 @@ module load plink
 
 if [ $# -ne 2 ]
 then
-	echo "Usage: ./gcta-prs.sh [pop1] [pop2]"
+	echo "Usage: ./gcta-prs.sh [train pop] [val pop]"
 	exit 1
 fi
 
-#SGE_TASK_ID=10
+#SGE_TASK_ID=3
 h2=$(( SGE_TASK_ID - 1 ))
 pop1=$1
 pop2=$2
+pop=${pop1}-${pop2}
 
-if [ $pop1 == $pop2 ]
-then
-	pop=$pop1
-else
-	pop=${pop1}-${pop2}
-fi
-bfile="../../data/${pop}/pheno/${pop}-val"
+bfile="../../data/val/${pop}/pheno/${pop}"
 
 for r in {1..100}
 do
-	name="${pop}-h2-${h2}-r-${r}"
-	score="../../data/${pop}/blup/${name}.snp.blp"
-	out="../../data/${pop}/prs/${name}"
-	pheno="../../data/${pop}/pheno/${pop}-h2-${h2}-val.phen"
+	score="../../data/train/${pop1}/blup/${pop1}-h2-${h2}-r-${r}.snp.blp"
+	out="../../data/val/${pop}/prs/${pop}-h2-${h2}-r-${r}"
+	pheno="../../data/val/${pop}/pheno/${pop}-h2-${h2}.phen"
+
 	plink \
 		--bfile $bfile \
 		--pheno $pheno --mpheno ${r} --allow-no-sex \
@@ -44,4 +41,4 @@ done
 
 echo "sleeping"
 sleep 5m
-echo "done sleeping"
+echo "done"
