@@ -8,10 +8,9 @@ fi
 
 pop=$1
 
-./prepare.sh $pop
 # phenotype simulations
-qsub ./pheno-sim-train.sh $pop
+qsub ./sim/pheno-sim-train.sh $pop
 # grm
-qsub ./grm.sh $pop
+qsub ./grm/grm.sh $pop
 # blup
-qsub ./blup.sh $pop
+qsub ./grm/blup.sh $pop

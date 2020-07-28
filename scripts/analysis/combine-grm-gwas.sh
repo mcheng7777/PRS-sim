@@ -3,7 +3,7 @@
 
 if [ $# -ne 4 ]
 then
-	echo "Usage: ./corr.sh [grm] [gwas] [train] [pop]"
+	echo "Usage: ./combine-grm-gwas.sh [grm] [gwas] [train] [pop]"
 	exit 1
 fi
 
