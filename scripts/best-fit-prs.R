@@ -117,7 +117,7 @@ maxthresh <- prs.result[which.max(prs.result$R2),]
 h2 <- str_split(outname,"-")[[1]][3]
 r <- str_sub(str_split(outname,"-")[[1]][5],1,-2)
 write(paste0(h2,"\t",r,"\t",maxthresh$Threshold,"\t",maxthresh$R2),file=args[4],append=T)
-write.table(prs.result, paste0("plots/",outname,"R2-table.txt"),row.names=F,col.names = T)
+# write.table(prs.result, paste0("plots/",outname,"R2-table.txt"),row.names=F,col.names = T)
 # line = paste0(substr(name,length()))
 
 # 
