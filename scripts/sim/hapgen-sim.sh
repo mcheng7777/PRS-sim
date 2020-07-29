@@ -39,10 +39,10 @@ $hapgen2 \
 	-n 5000 0
 
 $gtool -G --g ${out}.out.controls.gen --s ${out}.out.controls.sample --ped ${out}.ped --map ${out}.map
-plink --file ${out} --make-bed -out ${bfile}-temp
+plink --file ${out} --keep-allele-order --make-bed -out ${bfile}-temp
 
 cut -f 2 ${bfile}-temp.bim | sort | uniq -d > ${bfile}.dups
-plink --bfile ${bfile}-temp --exclude ${bfile}.dups --make-bed --out ${bfile}
+plink --bfile ${bfile}-temp --exclude ${bfile}.dups --keep-allele-order --make-bed --out ${bfile}
 rm ${bfile}-temp*
 
 sed -i "s/id/${pop}/g" ${bfile}.fam

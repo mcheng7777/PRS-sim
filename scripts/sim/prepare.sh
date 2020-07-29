@@ -41,6 +41,7 @@ then
 	mkdir ${valdir}
 	mkdir ${valdir}/pheno
 	mkdir ${valdir}/prs
+	mkdir ${valdir}/corr
 fi
 
 
@@ -56,8 +57,8 @@ then
 	tail -n +$(( numtrain + 1 )) ${train}-indi-rand.txt > ${val}-indi-val.txt
 
 	# create separate bfiles for training and validation
-	plink --bfile $bfile1 --keep-fam ${train}-indi-train.txt --make-bed --out ${train}
-	plink --bfile $bfile1 --keep-fam ${val}-indi-val.txt --make-bed --out ${val}
+	plink --bfile $bfile1 --keep-fam ${train}-indi-train.txt --keep-allele-order --make-bed --out ${train}
+	plink --bfile $bfile1 --keep-fam ${val}-indi-val.txt --keep-allele-order --make-bed --out ${val}
 
 else
 	
