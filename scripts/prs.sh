@@ -1,6 +1,6 @@
 #$ -N job-prs-sim
-#$ -l h_rt=6:00:00,h_data=8G
-#$ -t 1-10:1
+#$ -l h_rt=4:00:00,h_data=16G
+# #$ -t 1-100:1
 #$ -cwd
 
 #!/bin/bash
@@ -16,38 +16,50 @@ module load plink
 # phenotype matrix
 # covariate matrix
 
-# SGE_TASK_ID=10
+# SGE_TASK_ID=100
 pop=$1
-herit=$(( SGE_TASK_ID - 1 ))
-echo $herit
+effect=$2
+#r=$(( SGE_TASK_ID ))
+r=4
+echo $r
 
-b_files="../data/${pop}/pheno/${pop}"
-
-outdir="../data/${pop}/prs/"
+b_files="../data/train/${pop}/pheno/${pop}"
+if [ ${effect} == "genetic" ]
+then
+	outdir="../data/train/${pop}/genetic-prs"
+else
+	outdir="../data/train/${pop}/prs"
+fi
 mkdir $outdir
 
 # make p-value rangelist
 thresh_array=( "0.05" "0.1" "0.2" "0.3" "0.4" "0.5" "0.6" "0.7" "0.8" "0.9" "1" )
-if [ -f ${outdir}rangelist ]
+if [ -f ${outdir}/rangelist ]
 then
-    echo "rangelist: ${outdir}rangelist"
+    echo "rangelist: ${outdir}/rangelist"
 else
     echo "p value thresholds"
     # pvalue range list for inclusion in PRS
     for i in "${thresh_array[@]}"
     do
         echo ${i}
-        echo "${i} 0 ${i}" >> ${outdir}rangelist
+        echo "${i} 0 ${i}" >> ${outdir}/rangelist
     done
 fi
 
-for r in {1..100}
+for herit in 6
 do
-    name=h2-${herit}.P${r}
+    name=${pop}-h2-${herit}.P${r}
     outname=h2-${herit}-r-${r}
-    sum_stats="../data/${pop}/gwas/${name}.assoc.linear"
-    phen_file="../data/${pop}/pheno/${pop}-h2-${herit}-scaled.phen"
-    out=${outdir}${pop}-${outname}
+    if [ ${effect} == "genetic" ]
+    then
+	sum_stats="../data/train/${pop}/genetic-gwas/${name}.assoc.linear"
+	phen_file="../data/train/${pop}/pheno/${pop}-h2-${herit}-genetic-val.phen"
+    else
+	sum_stats="../data/train/${pop}/gwas/${name}.assoc.linear"
+	phen_file="../data/train/${pop}/pheno/${pop}-h2-${herit}-val.phen"
+    fi
+    out=${outdir}/${pop}-${outname}
     # step 1 - clumping/LD
     if [ -f ${out}.clumped ]
     then
@@ -55,6 +67,7 @@ do
     else
         plink \
             --bfile $b_files \
+	    --memory 15000 \
             --clump-p1 1 \
             --clump-r2 0.2 \
             --clump-kb 250 \
@@ -70,17 +83,17 @@ do
     # calculate PRS for all phenotype and split up validation
     plink \
             --bfile $b_files \
+	    --memory 15000 \
             --pheno $phen_file --mpheno ${r} --allow-no-sex \
             --score $sum_stats 2 4 7 header \
-            --q-score-range ${outdir}rangelist ${out}.SNP.pvalue \
-            --extract ${out}.valid.snp \
+            --q-score-range ${outdir}/rangelist ${out}.SNP.pvalue \
+	    --extract ${out}.valid.snp \
             --out ${out}
     for i in "${thresh_array[@]}"
     do
-        echo "sorting ${name}.${i}.profile"
+        echo "sorting ${outname}.${i}.profile"
         awk '{printf $1 "\t" $3 "\t" $4 * $6 * 2 "\n"}' ${out}.${i}.profile > ${out}.${i}-pheno.profile
-        grep -F -wf "../data/${pop}/pheno/indi-val.txt" ${out}.${i}-pheno.profile > ${out}.${i}-val.profile
-	# grep -F -wf "../data/${pop}/pheno/indi-test.txt" ${out}.${i}-pheno.profile > ${out}.${i}-test.profile
+        grep -F -wf "../data/train/${pop}/pheno/${pop}-indi-val.txt" ${out}.${i}-pheno.profile > ${out}.${i}-val.profile
 	rm ${out}.${i}-pheno.profile
     done
 done
