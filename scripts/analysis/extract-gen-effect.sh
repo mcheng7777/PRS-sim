@@ -1,7 +1,7 @@
 #!/bin/bash
 
 pop=$1
-gblup="../../data/${pop}/blup/${pop}"
+gblup="../../data/train/${pop}/blup/${pop}"
 
 for h2 in {0..9}
 do

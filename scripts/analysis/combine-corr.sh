@@ -10,4 +10,5 @@ pop1=$1
 pop2=$2
 pop=${pop1}-${pop2}
 
-cat ${pop}-grm-corr-* >> ${pop}-grm-corr.txt
+dir="../../data/val/${pop}/corr"
+cat ${dir}/${pop}-grm-* >> ${dir}/${pop}-grm.txt

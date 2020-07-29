@@ -14,6 +14,6 @@ val=$4
 
 
 awk -v pop=$val '{print $1"\t"$2"\t"$4"\tpop\tgwas"}' $gwas > grm-gwas-${train}-${val}-corr.txt
-awk '{print $0"\tgrm"}' $grm >> grm-gwas-${train}-${val}-corr.txt
+grep $val $grm | awk '{print $0"\tgrm"}' >> grm-gwas-${train}-${val}-corr.txt
 
 

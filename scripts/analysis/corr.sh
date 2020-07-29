@@ -22,7 +22,7 @@ pop1=$1
 pop2=$2
 pop=${pop1}-${pop2}
 
-out="${pop}-grm-corr-${h2}.txt"
+out="../../data/val/${pop}/corr/${pop}-grm-${h2}.txt"
 
 for r in {1..100}
 do
