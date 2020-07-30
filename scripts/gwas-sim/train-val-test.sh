@@ -3,8 +3,8 @@
 pop=$1
 # testpop=$3
 effect=$2
-outdir="../data/train/$pop/pheno"
-# testdir="../data/val/$testpop/pheno"
+outdir="../../data/train/$pop/pheno"
+# testdir="../../data/val/$testpop/pheno"
 names="${outdir}/${pop}-indi"
 # testnames="${testdir}/${testpop}-indi"
 out="${outdir}/$pop"
@@ -23,9 +23,9 @@ tail -n +$((train + 1)) ${names}-rand.txt > ${names}-val.txt # | head -n ${val} 
 for h2 in {0..9}
 do
 	# Read In original train file and split into train and validation
-	# data="../data/${pop}/pheno/${pop}-h2-${h2}-scaled"
-	data="../data/train/${pop}/pheno/${pop}-h2-${h2}"
-	datagen="../data/train/${pop}/pheno/${pop}-h2-${h2}-genetic"
+	# data="../../data/${pop}/pheno/${pop}-h2-${h2}-scaled"
+	data="../../data/train/${pop}/pheno/${pop}-h2-${h2}"
+	datagen="../../data/train/${pop}/pheno/${pop}-h2-${h2}-genetic"
 	# echo "partitioning h2: ${h2}"
 	# grep -F -wf ${names}-train.txt ${data}.phen > ${data}-train.phen
 	# grep -F -wf ${names}-val.txt ${data}.phen > ${data}-val.phen
