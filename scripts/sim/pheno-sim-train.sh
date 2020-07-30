@@ -3,6 +3,7 @@
 #$ -l h_rt=01:00:00,h_data=32G
 #$ -t 1-10:1
 #$ -j y
+#$ -hold_jid job-hapgen
 #!/bin/bash
 
 . /u/local/Modules/default/init/modules.sh
