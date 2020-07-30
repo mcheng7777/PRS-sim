@@ -15,15 +15,15 @@ module load plink
 # create directory and file variables
 pop=$1
 effect=$2
-bin_files="../data/train/${pop}/pheno/${pop}"
+bin_files="../../data/train/${pop}/pheno/${pop}"
 if [ ${effect} == "genetic" ]
 then
-	outdir="../data/train/${pop}/genetic-gwas"
+	outdir="../../data/train/${pop}/genetic-gwas"
 else
-	outdir="../data/train/${pop}/gwas"
+	outdir="../../data/train/${pop}/gwas"
 fi
 
-pca_out="../data/train/${pop}/pca"
+pca_out="../../data/train/${pop}/pca"
 
 r=$(( SGE_TASK_ID ))
 for h in {0..9}
@@ -31,9 +31,9 @@ do
 	herit="h2-${h}"
 	if [ ${effect} == "genetic" ]
 	then
-		phen_file="../data/train/${pop}/pheno/${pop}-${herit}-genetic-train.phen"
+		phen_file="../../data/train/${pop}/pheno/${pop}-${herit}-genetic-train.phen"
 	else
-		phen_file="../data/train/${pop}/pheno/${pop}-${herit}-train.phen"
+		phen_file="../../data/train/${pop}/pheno/${pop}-${herit}-train.phen"
 	fi
 	# run plink quantitative association simulation
 	plink \
