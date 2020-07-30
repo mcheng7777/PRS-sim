@@ -14,7 +14,7 @@ module load R/3.5.1
 # SGE_TASK_ID=10
 pop=$1
 effect=$2
-working_dir="../data/train/${pop}"
+working_dir="../../data/train/${pop}"
 pca_file="pca/${pop}-pruned-pca.eigenvec"
 herit=$(( SGE_TASK_ID - 1))
 if [ $effect == "genetic" ]
