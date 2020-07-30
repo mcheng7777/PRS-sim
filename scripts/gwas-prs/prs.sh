@@ -1,6 +1,6 @@
 #$ -N job-prs-sim
 #$ -l h_rt=4:00:00,h_data=16G
-# #$ -t 1-100:1
+#$ -t 1-100:1
 #$ -cwd
 
 #!/bin/bash
@@ -19,16 +19,15 @@ module load plink
 # SGE_TASK_ID=100
 pop=$1
 effect=$2
-#r=$(( SGE_TASK_ID ))
-r=4
+r=$(( SGE_TASK_ID ))
 echo $r
 
-b_files="../data/train/${pop}/pheno/${pop}"
+b_files="../../data/train/${pop}/pheno/${pop}"
 if [ ${effect} == "genetic" ]
 then
-	outdir="../data/train/${pop}/genetic-prs"
+	outdir="../../data/train/${pop}/genetic-prs"
 else
-	outdir="../data/train/${pop}/prs"
+	outdir="../../data/train/${pop}/prs"
 fi
 mkdir $outdir
 
@@ -47,17 +46,17 @@ else
     done
 fi
 
-for herit in 6
+for herit in {0..9}
 do
     name=${pop}-h2-${herit}.P${r}
     outname=h2-${herit}-r-${r}
     if [ ${effect} == "genetic" ]
     then
-	sum_stats="../data/train/${pop}/genetic-gwas/${name}.assoc.linear"
-	phen_file="../data/train/${pop}/pheno/${pop}-h2-${herit}-genetic-val.phen"
+	sum_stats="../../data/train/${pop}/genetic-gwas/${name}.assoc.linear"
+	phen_file="../../data/train/${pop}/pheno/${pop}-h2-${herit}-genetic-val.phen"
     else
-	sum_stats="../data/train/${pop}/gwas/${name}.assoc.linear"
-	phen_file="../data/train/${pop}/pheno/${pop}-h2-${herit}-val.phen"
+	sum_stats="../../data/train/${pop}/gwas/${name}.assoc.linear"
+	phen_file="../../data/train/${pop}/pheno/${pop}-h2-${herit}-val.phen"
     fi
     out=${outdir}/${pop}-${outname}
     # step 1 - clumping/LD
@@ -93,7 +92,7 @@ do
     do
         echo "sorting ${outname}.${i}.profile"
         awk '{printf $1 "\t" $3 "\t" $4 * $6 * 2 "\n"}' ${out}.${i}.profile > ${out}.${i}-pheno.profile
-        grep -F -wf "../data/train/${pop}/pheno/${pop}-indi-val.txt" ${out}.${i}-pheno.profile > ${out}.${i}-val.profile
+        grep -F -wf "../../data/train/${pop}/pheno/${pop}-indi-val.txt" ${out}.${i}-pheno.profile > ${out}.${i}-val.profile
 	rm ${out}.${i}-pheno.profile
     done
 done
