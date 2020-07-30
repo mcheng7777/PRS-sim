@@ -44,6 +44,7 @@ do
 	else
 		grep -F -wf ${names}-train.txt ${data}.phen > ${data}-train.phen
         	grep -F -wf ${names}-val.txt  ${data}.phen > ${data}-val.phen
+		grep -F -wf ${names}-val.txt  ${data}.phen > ${data}-test.phen
 		# cp ${data}-val.phen ${data}-scaled-test.phen
 	fi
 done
