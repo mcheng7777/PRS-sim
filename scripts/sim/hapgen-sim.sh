@@ -2,6 +2,7 @@
 #$ -N job-hapgen
 #$ -cwd
 #$ -l h_rt=04:00:00,h_data=32G
+#$ -hold_jid job-filter
 #$ -j y
 
 . /u/local/Modules/default/init/modules.sh
