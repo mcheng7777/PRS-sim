@@ -1,7 +1,8 @@
 #$ -N job-blup
 #$ -cwd
-#$ -t 1-100:1
-#$ -l h_rt=02:30:00,h_data=8G
+#$ -t 1-10:1
+#$ -l h_rt=04:00:00,h_data=2G
+#$ -pe shared 8
 #$ -j y
 ##$ -hold_jid job-grm
 #!/bin/bash
@@ -14,16 +15,17 @@ then
 fi
 gcta="../../bin/gcta64"
 
-#SGE_TASK_ID=87
-#h2=$(( SGE_TASK_ID - 1))
-r=$SGE_TASK_ID
+#SGE_TASK_ID=9
+h2=$(( SGE_TASK_ID - 1))
+#r=$SGE_TASK_ID
 pop=$1
 
 bfile="../../data/train/${pop}/pheno/${pop}" 
 grm="../../data/train/${pop}/grm/${pop}"
 pheno="../../data/train/${pop}/pheno/${pop}"
 
-for h2 in {0..9}
+for r in {0..100}
+#for h2 in {0..9}
 do
 	phenoin="${pheno}-h2-${h2}.phen" 
 	out="../../data/train/${pop}/blup/${pop}-h2-${h2}-r-${r}" 

@@ -1,14 +1,13 @@
 #!/bin/bash
 
-if [ $# -ne 2 ]
+if [ $# -ne 1 ]
 then
-	echo "Usage: ./corr.sh [train pop] [val pop]"
+	echo "Usage: ./combine-corr.sh [val pop]"
 	exit 1
 fi
 
-pop1=$1
-pop2=$2
-pop=${pop1}-${pop2}
+pop=$1
 
 dir="../../data/val/${pop}/corr"
-cat ${dir}/${pop}-grm-* >> ${dir}/${pop}-grm.txt
+out="/u/project/sriram/dtang200/corr"
+cat ${dir}/*.txt > ${out}/${pop}-grm.txt

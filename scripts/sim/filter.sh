@@ -15,11 +15,12 @@ then
 fi
 
 
-#hapmatrix='../data/ALL.chr1.phase3_shapeit2_mvncall_integrated_v5a.20130502.genotypes.vcf.gz'
+# input files
 hapmatrix='../../data/vcf/full.recode.vcf'
 pop=$1
 out="../../data/vcf/$pop"
 
+# filter by population
 vcftools \
 	--vcf $hapmatrix \
 	--recode \
@@ -29,7 +30,3 @@ vcftools \
 # for hoffman time out
 echo "sleeping"
 sleep 5m
-
-# --keep ${out}.txt \
-# --gzvcf $hapmatrix \
-# --maf 0.05 \
