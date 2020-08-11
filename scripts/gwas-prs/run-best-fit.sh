@@ -1,5 +1,6 @@
-#$ -N job-prs-plots
+#$ -N job-prs-pval
 #$ -l h_rt=00:10:00,h_data=8G
+#$ -hold_jid job-prs-sim
 #$ -t 1-10:1
 #$ -cwd
 
