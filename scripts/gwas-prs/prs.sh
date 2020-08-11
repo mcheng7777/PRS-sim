@@ -1,5 +1,6 @@
 #$ -N job-prs-sim
 #$ -l h_rt=4:00:00,h_data=16G
+#$ -hold_jid job-gwas-sim
 #$ -t 1-100:1
 #$ -cwd
 
@@ -20,6 +21,7 @@ module load plink
 pop=$1
 effect=$2
 r=$(( SGE_TASK_ID ))
+# r=65
 echo $r
 
 b_files="../../data/train/${pop}/pheno/${pop}"
@@ -78,13 +80,13 @@ do
     # extract SNP ids
     awk 'NR!=1{print $3}' ${out}.clumped > ${out}.valid.snp
     # snp id's and p-values
-    awk '{print $2,$9}' $sum_stats > ${out}.SNP.pvalue
+    awk '{print $1,$4}' $sum_stats > ${out}.SNP.pvalue
     # calculate PRS for all phenotype and split up validation
     plink \
             --bfile $b_files \
 	    --memory 15000 \
             --pheno $phen_file --mpheno ${r} --allow-no-sex \
-            --score $sum_stats 2 4 7 header \
+            --score $sum_stats 1 2 3 header \
             --q-score-range ${outdir}/rangelist ${out}.SNP.pvalue \
 	    --extract ${out}.valid.snp \
             --out ${out}
@@ -94,9 +96,14 @@ do
         awk '{printf $1 "\t" $3 "\t" $4 * $6 * 2 "\n"}' ${out}.${i}.profile > ${out}.${i}-pheno.profile
         grep -F -wf "../../data/train/${pop}/pheno/${pop}-indi-val.txt" ${out}.${i}-pheno.profile > ${out}.${i}-val.profile
 	rm ${out}.${i}-pheno.profile
+	rm ${out}.${i}.profile
     done
+    # remove temp files
+    rm ${out}.SNP.pvalue
+    rm ${out}.nopred
+    rm ${out}.nosex
 done
 
 echo "sleeping"
 sleep 5m
-
+echo "done"
