@@ -5,6 +5,9 @@
 #$ -cwd
 
 #!/bin/bash
+# Usage: prs.sh [population] [original or genetic]
+# Run prs on validation individuals with range of p-value thresholds
+
 
 . /u/local/Modules/default/init/modules.sh
 module load plink
@@ -18,6 +21,7 @@ module load plink
 # covariate matrix
 
 # SGE_TASK_ID=100
+# declare variables
 pop=$1
 effect=$2
 r=$(( SGE_TASK_ID ))
@@ -48,6 +52,7 @@ else
     done
 fi
 
+# clump and run PRS
 for herit in {0..9}
 do
     name=${pop}-h2-${herit}.P${r}
@@ -61,7 +66,7 @@ do
 	phen_file="../../data/train/${pop}/pheno/${pop}-h2-${herit}-val.phen"
     fi
     out=${outdir}/${pop}-${outname}
-    # step 1 - clumping/LD
+    # LD clumping
     if [ -f ${out}.clumped ]
     then
         echo "using ${out}.clumped"
