@@ -3,7 +3,7 @@
 #$ -cwd
 
 #!/bin/bash
-# Usage: gwas-prs-model.sh [population] ["original" or "genetic"]
+# Usage: pca.sh [population]
 # Prune SNPS and find principal components for GWAS
 
 
