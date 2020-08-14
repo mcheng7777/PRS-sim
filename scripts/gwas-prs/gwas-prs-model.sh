@@ -8,6 +8,9 @@
 
 #!/bin/bash
 
+# Usage: gwas-prs-model.sh [population] [original or genetic]
+# run gwas on phenotypes to obtain snp marginal effects and p-values 
+
 # load modules
 . /u/local/Modules/default/init/modules.sh
 module load plink
