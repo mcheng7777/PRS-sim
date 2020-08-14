@@ -5,6 +5,8 @@
 #$ -cwd
 
 #!/u/bin/bash
+# Usage: run-best-fit.sh [population] [original or genetic]
+# Find optimal p-value threshold for prs
 
  
 # load modules
@@ -13,6 +15,7 @@
 module load R/3.5.1
 
 # SGE_TASK_ID=10
+# declare variables
 pop=$1
 effect=$2
 working_dir="../../data/train/${pop}"
@@ -24,6 +27,8 @@ then
 else
 	outfile="max-pvals-${herit}.txt"
 fi
+
+# find optimal p-value
 echo $herit
 for r in {1..100}
 do
